@@ -1,5 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+* text eol=lf
 
 ## git-lfs ##
-*.dylib
+*.dylib  filter=lfs diff=lfs merge=lfs -text
