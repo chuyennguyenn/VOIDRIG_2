@@ -43,7 +43,7 @@ public class Weapon: MonoBehaviour
             FireWeapon();
         }
 
-        if (Input.GetKey(KeyCode.R) && isReloading == false) // R key for reloading
+        if (Input.GetButtonDown("Reload") && isReloading == false) // R key for reloading
         {
             if (currentAmmo >= magazineCapacity)
             {
