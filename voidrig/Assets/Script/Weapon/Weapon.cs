@@ -9,12 +9,13 @@ public class Weapon: MonoBehaviour
 
     public GunData gunData;
 
-    private float currentAmmo;
-    private float magazineCapacity;
-    private float totalAmmo;
+    private int currentAmmo;
+    private int magazineCapacity;
+    private int totalAmmo;
+    private int neededAmmo;     //use to calculate how much ammo is needed to fill the magazine
+
     private float reloadTime;
     private float fireRate;
-
     private float bulletVelocity;
     private float bulletLifeTime;
 
@@ -37,13 +38,25 @@ public class Weapon: MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0))   //left mouse button
         {
             FireWeapon();
         }
 
-        if (Input.GetKey(KeyCode.R) && isReloading == false) 
+        if (Input.GetKey(KeyCode.R) && isReloading == false) // R key for reloading
         {
+            if (currentAmmo >= magazineCapacity)
+            {
+                Debug.Log("Magazine is already full!");
+                return;
+            }
+
+            if (totalAmmo <= 0)
+            {
+                Debug.Log("No ammo left to reload!");
+                return;
+            }
+
             isReloading = true;
             StartCoroutine(ReloadWeapon(reloadTime));
         }
@@ -56,7 +69,7 @@ public class Weapon: MonoBehaviour
             Debug.Log("Reloading, please wait...");
             return;
         }
-        //create bullet
+
         if (currentAmmo > 0 && isShooting == false)
         {
             isShooting = true;
@@ -69,7 +82,7 @@ public class Weapon: MonoBehaviour
         
         if (currentAmmo <= 0)
         {
-            Debug.Log("Out of Ammo!!");
+            Debug.Log("Out of Ammo!! " + currentAmmo + "/" + totalAmmo);
         }
     }
 
@@ -82,7 +95,23 @@ public class Weapon: MonoBehaviour
     private IEnumerator ReloadWeapon(float reloadTime)
     {
         yield return new WaitForSeconds(reloadTime);
-        currentAmmo = magazineCapacity;
+
+        neededAmmo = magazineCapacity - currentAmmo;
+
+        if (neededAmmo <= 0)
+        {
+            Debug.Log("Magazine is already full!");
+            isReloading = false;
+            yield break;
+        }
+
+        if (neededAmmo > totalAmmo)
+        {
+            neededAmmo = totalAmmo; 
+        }
+
+        totalAmmo -= neededAmmo;
+        currentAmmo += neededAmmo;
         Debug.Log("Weapon reloaded!");
         isReloading = false;
     }
