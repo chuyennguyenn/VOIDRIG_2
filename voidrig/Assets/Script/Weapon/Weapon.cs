@@ -7,19 +7,27 @@ public class Weapon: MonoBehaviour
 
     public Transform bulletSpawn;
 
-    private float magazine = 3;
-    private float ammoCapacity = 3;
-    private float reloadTime = 3f;
+    private float magazine = 30;
+    private float ammoCapacity = 30;
+    private float reloadTime = 1f;
+    private float rateOfFire = 0.05f;
 
     public float bulletVelocity = 30f;
     public float bulletLifeTime = 3f;
 
     private bool isReloading = false;
+    private bool isShooting = false;
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             FireWeapon();
+        }
+
+        if (Input.GetKey(KeyCode.R) && isReloading == false) 
+        {
+            isReloading = true;
+            StartCoroutine(ReloadWeapon(reloadTime));
         }
     }
 
@@ -31,26 +39,19 @@ public class Weapon: MonoBehaviour
             return;
         }
         //create bullet
-        if (magazine > 0)
+        if (magazine > 0 && isShooting == false)
         {
+            isShooting = true;
 
-            GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
-
-            //shoot
-            bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
-
-            //destroy
-            StartCoroutine(DestroyBullet(bullet, bulletLifeTime));
-
+            StartCoroutine(Shooting(rateOfFire));
             magazine -= 1;
 
             Debug.Log("Bullet fired! Remaining ammo: " + magazine);
         }
         
-        if (magazine <= 0 && isReloading == false)
+        if (magazine <= 0)
         {
-            isReloading = true;
-            StartCoroutine(ReloadWeapon(reloadTime));
+            Debug.Log("Out of Ammo!!");
         }
     }
 
@@ -66,5 +67,21 @@ public class Weapon: MonoBehaviour
         magazine = ammoCapacity;
         Debug.Log("Weapon reloaded!");
         isReloading = false;
+    }
+
+    private IEnumerator Shooting(float rateOfFire)
+    {
+        yield return new WaitForSeconds(rateOfFire);
+
+        //spawn bullet
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
+
+        //shoot
+        bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
+
+        //destroy
+        StartCoroutine(DestroyBullet(bullet, bulletLifeTime));
+
+        isShooting = false;
     }
 }
