@@ -1,13 +1,14 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class Weapon: MonoBehaviour
+[RequireComponent(typeof(PlayerInput))]
+public class Weapon : MonoBehaviour
 {
     public GameObject bulletPrefab;
-
     public Transform bulletSpawn;
 
-    public GunData gunData;
+    [SerializeField] private GunData gunData;
 
     private float currentAmmo;
     private float magazineCapacity;
@@ -21,28 +22,65 @@ public class Weapon: MonoBehaviour
     private bool isReloading = false;
     private bool isShooting = false;
 
+    private PlayerInput playerInput;
+    private InputAction reloadAction;
+    private System.Action<InputAction.CallbackContext> reloadCallback;
+
     private void Start()
     {
-        //gun properties
+        // initialize gun stats from data
         magazineCapacity = gunData.machineGun.magazineCapacity;
-        currentAmmo = magazineCapacity; 
+        currentAmmo = magazineCapacity;
         totalAmmo = gunData.machineGun.totalAmmo;
         reloadTime = gunData.machineGun.reloadTime;
         fireRate = gunData.machineGun.fireRate;
 
-        //bullet properties
         bulletVelocity = gunData.machineGun.bulletVelocity;
         bulletLifeTime = gunData.machineGun.bulletLifeTime;
-        
+
+        Debug.Log("Initial ammo: " + currentAmmo + "/" + totalAmmo);
     }
+
+    private void OnEnable()
+    {
+        // bind reload input only after InputSystem is fully ready
+        playerInput = GetComponent<PlayerInput>();
+
+        if (playerInput == null || playerInput.actions == null)
+        {
+            Debug.LogError("PlayerInput or its actions are not initialized!");
+            return;
+        }
+
+        reloadAction = playerInput.actions["Reload"];
+        reloadAction.Enable();
+
+        reloadCallback = ctx => TryReload();
+        reloadAction.performed += reloadCallback;
+    }
+
+    private void OnDisable()
+    {
+        // safely remove the reload callback
+        if (reloadAction != null && reloadCallback != null)
+            reloadAction.performed -= reloadCallback;
+    }
+
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Mouse0))
+        // fire input from mouse
+        if (Mouse.current.leftButton.isPressed)
         {
             FireWeapon();
         }
+    }
 
-        if (Input.GetKey(KeyCode.R) && isReloading == false) 
+    private void TryReload()
+    {
+        Debug.Log($"Trying to reload | current: {currentAmmo}, total: {totalAmmo}");
+        Debug.Log("Reload input received");
+
+        if (!isReloading)
         {
             isReloading = true;
             StartCoroutine(ReloadWeapon(reloadTime));
@@ -56,34 +94,49 @@ public class Weapon: MonoBehaviour
             Debug.Log("Reloading, please wait...");
             return;
         }
-        //create bullet
-        if (currentAmmo > 0 && isShooting == false)
+
+        if (currentAmmo > 0 && !isShooting)
         {
             isShooting = true;
-
             StartCoroutine(Shooting(fireRate));
             currentAmmo -= 1;
-
             Debug.Log("Bullet fired! Remaining ammo: " + currentAmmo + "/" + totalAmmo);
         }
-        
-        if (currentAmmo <= 0)
-        {
-            Debug.Log("Out of Ammo!!");
-        }
-    }
 
-    private IEnumerator DestroyBullet(GameObject bullet, float bulletLifetime)
-    {
-        yield return new WaitForSeconds(bulletLifetime);
-        Destroy(bullet);
+        if (currentAmmo <= 0 && totalAmmo <= 0)
+        {
+            Debug.Log("Completely out of ammo!");
+        }
+        else if (currentAmmo <= 0)
+        {
+            Debug.Log("Magazine empty! Press reload.");
+        }
     }
 
     private IEnumerator ReloadWeapon(float reloadTime)
     {
+        Debug.Log("Reloading...");
         yield return new WaitForSeconds(reloadTime);
-        currentAmmo = magazineCapacity;
-        Debug.Log("Weapon reloaded!");
+
+        float missingAmmo = magazineCapacity - currentAmmo;
+
+        if (totalAmmo <= 0)
+        {
+            Debug.Log("No ammo in reserve to reload!");
+        }
+        else if (totalAmmo < missingAmmo)
+        {
+            currentAmmo += totalAmmo;
+            totalAmmo = 0;
+            Debug.Log("Partially reloaded. Ammo: " + currentAmmo + "/" + totalAmmo);
+        }
+        else
+        {
+            currentAmmo = magazineCapacity;
+            totalAmmo -= missingAmmo;
+            Debug.Log("Fully reloaded. Ammo: " + currentAmmo + "/" + totalAmmo);
+        }
+
         isReloading = false;
     }
 
@@ -91,15 +144,16 @@ public class Weapon: MonoBehaviour
     {
         yield return new WaitForSeconds(fireRate);
 
-        //spawn bullet
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
-
-        //shoot
         bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
-
-        //destroy
         StartCoroutine(DestroyBullet(bullet, bulletLifeTime));
 
         isShooting = false;
+    }
+
+    private IEnumerator DestroyBullet(GameObject bullet, float bulletLifetime)
+    {
+        yield return new WaitForSeconds(bulletLifetime);
+        Destroy(bullet);
     }
 }

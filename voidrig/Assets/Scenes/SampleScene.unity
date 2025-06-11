@@ -1106,6 +1106,94 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1606630862
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1606630864}
+  - component: {fileID: 1606630863}
+  m_Layer: 0
+  m_Name: GunDataHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1606630863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1606630862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 501c6eb83b271904082fe8342df6bd77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  machineGun:
+    magazineCapacity: 30
+    totalAmmo: 120
+    damage: 3
+    bulletVelocity: 180
+    knockBack: 2
+    bulletLifeTime: 2
+    accuracy: 0.7
+    fireRate: 0.05
+    reloadTime: 1
+    scatter: 0
+  shotGun:
+    magazineCapacity: 7
+    totalAmmo: 28
+    damage: 1
+    bulletVelocity: 180
+    knockBack: 10
+    bulletLifeTime: 0.5
+    accuracy: 0.3
+    fireRate: 0.5
+    reloadTime: 1
+    scatter: 1
+  sniper:
+    magazineCapacity: 5
+    totalAmmo: 20
+    damage: 10
+    bulletVelocity: 540
+    knockBack: 1
+    bulletLifeTime: 3
+    accuracy: 1
+    fireRate: 1
+    reloadTime: 2
+    scatter: 0
+  handGun:
+    magazineCapacity: 10
+    totalAmmo: 40
+    damage: 4
+    bulletVelocity: 180
+    knockBack: 4
+    bulletLifeTime: 2
+    accuracy: 0.85
+    fireRate: 0.1
+    reloadTime: 1
+    scatter: 0
+--- !u!4 &1606630864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1606630862}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.76492, y: 35.7503, z: 30.825}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1706854351
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,6 +1537,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: gunData
+      value: 
+      objectReference: {fileID: 1606630863}
+    - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2182446337942164015, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: m_TagString
+      value: MachineGun
+      objectReference: {fileID: 0}
     - target: {fileID: 3429162539685989681, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.023
@@ -1516,3 +1616,4 @@ SceneRoots:
   - {fileID: 1760237263}
   - {fileID: 580407623}
   - {fileID: 1228221620}
+  - {fileID: 1606630864}

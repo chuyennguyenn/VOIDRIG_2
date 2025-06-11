@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
 
-
-public class GunData: MonoBehaviour
+[Serializable]
+public class GunData : MonoBehaviour
 {
     [Serializable]
     public class Attribute
