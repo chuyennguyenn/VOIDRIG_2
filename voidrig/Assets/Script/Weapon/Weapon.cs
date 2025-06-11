@@ -38,7 +38,7 @@ public class Weapon: MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Mouse0))   //left mouse button
+        if (Input.GetButton("Fire1"))  //left mouse button
         {
             FireWeapon();
         }
