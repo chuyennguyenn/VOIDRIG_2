@@ -1037,7 +1037,7 @@ Transform:
   m_GameObject: {fileID: 1449860120}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.023, y: 32.016, z: 2.62}
+  m_LocalPosition: {x: 0.023, y: 31.72, z: 2.63}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1079,7 +1079,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36ea3703230abc8429459dad771b3410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 150
+  mouseSensitivity: 200
   minClamp: -90
   maxClamp: 90
 --- !u!1 &2092050457

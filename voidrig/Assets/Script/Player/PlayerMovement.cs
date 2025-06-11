@@ -42,7 +42,6 @@ public class PlayerMovement: MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGround == true)
         {
-            Debug.Log("Hello");
             velocity.y = Mathf.Sqrt(jump * -2f * gravity);
         }
 
