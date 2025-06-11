@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerMovement: MonoBehaviour
 {
-
     private CharacterController controller;
 
     public float speed = 10f;
