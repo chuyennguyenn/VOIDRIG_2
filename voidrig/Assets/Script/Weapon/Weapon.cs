@@ -7,16 +7,34 @@ public class Weapon: MonoBehaviour
 
     public Transform bulletSpawn;
 
-    private float magazine = 30;
-    private float ammoCapacity = 30;
-    private float reloadTime = 1f;
-    private float rateOfFire = 0.05f;
+    public GunData gunData;
 
-    public float bulletVelocity = 30f;
-    public float bulletLifeTime = 3f;
+    private float currentAmmo;
+    private float magazineCapacity;
+    private float totalAmmo;
+    private float reloadTime;
+    private float fireRate;
+
+    private float bulletVelocity;
+    private float bulletLifeTime;
 
     private bool isReloading = false;
     private bool isShooting = false;
+
+    private void Start()
+    {
+        //gun properties
+        magazineCapacity = gunData.machineGun.magazineCapacity;
+        currentAmmo = magazineCapacity; 
+        totalAmmo = gunData.machineGun.totalAmmo;
+        reloadTime = gunData.machineGun.reloadTime;
+        fireRate = gunData.machineGun.fireRate;
+
+        //bullet properties
+        bulletVelocity = gunData.machineGun.bulletVelocity;
+        bulletLifeTime = gunData.machineGun.bulletLifeTime;
+        
+    }
     private void Update()
     {
         if (Input.GetKey(KeyCode.Mouse0))
@@ -39,17 +57,17 @@ public class Weapon: MonoBehaviour
             return;
         }
         //create bullet
-        if (magazine > 0 && isShooting == false)
+        if (currentAmmo > 0 && isShooting == false)
         {
             isShooting = true;
 
-            StartCoroutine(Shooting(rateOfFire));
-            magazine -= 1;
+            StartCoroutine(Shooting(fireRate));
+            currentAmmo -= 1;
 
-            Debug.Log("Bullet fired! Remaining ammo: " + magazine);
+            Debug.Log("Bullet fired! Remaining ammo: " + currentAmmo + "/" + totalAmmo);
         }
         
-        if (magazine <= 0)
+        if (currentAmmo <= 0)
         {
             Debug.Log("Out of Ammo!!");
         }
@@ -64,14 +82,14 @@ public class Weapon: MonoBehaviour
     private IEnumerator ReloadWeapon(float reloadTime)
     {
         yield return new WaitForSeconds(reloadTime);
-        magazine = ammoCapacity;
+        currentAmmo = magazineCapacity;
         Debug.Log("Weapon reloaded!");
         isReloading = false;
     }
 
-    private IEnumerator Shooting(float rateOfFire)
+    private IEnumerator Shooting(float fireRate)
     {
-        yield return new WaitForSeconds(rateOfFire);
+        yield return new WaitForSeconds(fireRate);
 
         //spawn bullet
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
