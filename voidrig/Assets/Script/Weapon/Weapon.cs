@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput))]
 public class Weapon : MonoBehaviour
 {
     public GameObject bulletPrefab;
@@ -44,7 +43,7 @@ public class Weapon : MonoBehaviour
     private void OnEnable()
     {
         // bind reload input only after InputSystem is fully ready
-        playerInput = GetComponent<PlayerInput>();
+        playerInput = GetComponentInParent<PlayerInput>();
 
         if (playerInput == null || playerInput.actions == null)
         {
