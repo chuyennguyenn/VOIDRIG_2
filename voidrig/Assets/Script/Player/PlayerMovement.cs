@@ -1,61 +1,62 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerMovement: MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(PlayerInput))]
+public class PlayerMovement : MonoBehaviour
 {
-
     private CharacterController controller;
+    private PlayerInput playerInput;
+    private InputAction movementAction;
+    private InputAction jumpAction;
 
     public float speed = 10f;
     public float gravity = -9.81f;
-    public float jump = 3f;
+    public float jumpHeight = 3f;
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
 
-    bool isGround;
-    bool isMoving;
+    private Vector3 velocity;
+    private bool isGrounded;
+    private bool jumpQueued;
 
-    private Vector3 lastPos = new Vector3(0f, 0f, 0f);
-
-    Vector3 velocity;
     private void Start()
     {
-        controller= GetComponent<CharacterController>();
+        controller = GetComponent<CharacterController>();
+        playerInput = GetComponent<PlayerInput>();
+
+        movementAction = playerInput.actions["Movement"];
+        jumpAction = playerInput.actions["Jump"];
+
+        movementAction.Enable();
+        jumpAction.Enable();
+        jumpAction.performed += ctx => jumpQueued = true;
     }
 
     private void Update()
     {
-        isGround = Physics.CheckSphere(groundCheck.position , groundDistance, groundMask);
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (isGround && velocity.y < 0 )
-        {
+        if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
-        }
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 move = transform.right * x + transform.forward * z;
-
+        Vector2 input = movementAction.ReadValue<Vector2>();
+        Vector3 move = transform.right * input.x + transform.forward * input.y;
         controller.Move(move * speed * Time.deltaTime);
 
-        if (Input.GetButtonDown("Jump") && isGround == true)
+        if (jumpQueued && isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jump * -2f * gravity);
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            jumpQueued = false;
         }
 
         velocity.y += gravity * Time.deltaTime;
-
         controller.Move(velocity * Time.deltaTime);
+    }
 
-        if (lastPos != gameObject.transform.position && isGround == true) {
-            isMoving = true;
-        }
-        else isMoving = false;
-
-        lastPos = gameObject.transform.position;
-
-
+    private void OnDisable()
+    {
+        jumpAction.performed -= ctx => jumpQueued = true;
     }
 }
