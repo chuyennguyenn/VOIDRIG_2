@@ -4,120 +4,155 @@ using UnityEngine.InputSystem;
 
 public class Weapon : MonoBehaviour
 {
+    [Header("References")]
+    public Camera playerCamera;
     public GameObject bulletPrefab;
     public Transform bulletSpawn;
 
+    [Header("Gun Data")]
     [SerializeField] private GunData gunData;
 
-    private float currentAmmo;
-    private float magazineCapacity;
-    private float totalAmmo;
+    private GunData.Attribute activeGun;
+    private int currentAmmo;
+    private int magazineCapacity;
+    private int totalAmmo;
     private float reloadTime;
     private float fireRate;
-
     private float bulletVelocity;
     private float bulletLifeTime;
+    private float spreadIntensity;
+    private int bulletsPerBurst;
+    private float burstFireInterval;
 
-    private bool isReloading = false;
+    private GunData.ShootingMode[] availableModes;
+    private int currentModeIndex;
+    private GunData.ShootingMode currentShootingMode;
+    private int burstBulletsLeft;
+
     private bool isShooting = false;
+    private bool readyToShoot = true;
+    private bool allowReset = true;
+    private bool isReloading = false;
 
     private PlayerInput playerInput;
+    private InputAction attackAction;
     private InputAction reloadAction;
-    private System.Action<InputAction.CallbackContext> reloadCallback;
+    private InputAction switchModeAction;
+
+    private void Awake()
+    {
+        readyToShoot = true;
+    }
 
     private void Start()
     {
-        // initialize gun stats from data
-        magazineCapacity = gunData.machineGun.magazineCapacity;
-        currentAmmo = magazineCapacity;
-        totalAmmo = gunData.machineGun.totalAmmo;
-        reloadTime = gunData.machineGun.reloadTime;
-        fireRate = gunData.machineGun.fireRate;
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+            Debug.LogWarning("PlayerCamera not assigned. Defaulting to Camera.main.");
+        }
 
-        bulletVelocity = gunData.machineGun.bulletVelocity;
-        bulletLifeTime = gunData.machineGun.bulletLifeTime;
-
-        Debug.Log("Initial ammo: " + currentAmmo + "/" + totalAmmo);
+        SetActiveGun(gunData.machineGun);
     }
 
     private void OnEnable()
     {
-        // bind reload input only after InputSystem is fully ready
         playerInput = GetComponentInParent<PlayerInput>();
-
         if (playerInput == null || playerInput.actions == null)
         {
             Debug.LogError("PlayerInput or its actions are not initialized!");
             return;
         }
 
+        attackAction = playerInput.actions["Attack"];
         reloadAction = playerInput.actions["Reload"];
-        reloadAction.Enable();
+        switchModeAction = playerInput.actions["SwitchMode"];
 
-        reloadCallback = ctx => TryReload();
-        reloadAction.performed += reloadCallback;
+        attackAction.Enable();
+        reloadAction.Enable();
+        switchModeAction.Enable();
+
+        reloadAction.performed += ctx => TryReload();
+        switchModeAction.performed += ctx => SwitchMode();
     }
 
     private void OnDisable()
     {
-        // safely remove the reload callback
-        if (reloadAction != null && reloadCallback != null)
-            reloadAction.performed -= reloadCallback;
+        if (reloadAction != null)
+            reloadAction.performed -= ctx => TryReload();
+
+        if (switchModeAction != null)
+            switchModeAction.performed -= ctx => SwitchMode();
     }
 
     private void Update()
     {
-        // fire input from mouse
-        if (Mouse.current.leftButton.isPressed)
+        isShooting = currentShootingMode == GunData.ShootingMode.Auto
+            ? attackAction.IsPressed()
+            : attackAction.WasPressedThisFrame();
+
+        if (readyToShoot && isShooting)
         {
-            FireWeapon();
+            burstBulletsLeft = bulletsPerBurst;
+            StartCoroutine(ShootRepeatedly());
         }
+    }
+
+    private IEnumerator ShootRepeatedly()
+    {
+        readyToShoot = false;
+
+        while (burstBulletsLeft > 0 && currentAmmo > 0 && !isReloading)
+        {
+            FireBullet();
+            burstBulletsLeft--;
+
+            if (currentShootingMode == GunData.ShootingMode.Single)
+                break;
+
+            yield return new WaitForSeconds(burstFireInterval);
+        }
+
+        ResetShot();
+    }
+
+    private void FireBullet()
+    {
+        if (currentAmmo <= 0)
+        {
+            Debug.Log(totalAmmo <= 0 ? "Completely out of ammo!" : "Magazine empty! Press reload.");
+            return;
+        }
+
+        Vector3 shootingDirection = CalculateDirectionAndSpread().normalized;
+
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
+        bullet.transform.forward = shootingDirection;
+
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        rb.AddForce(shootingDirection * bulletVelocity, ForceMode.Impulse);
+
+        Destroy(bullet, bulletLifeTime);
+
+        currentAmmo--;
+        Debug.Log("Bullet fired! Remaining ammo: " + currentAmmo + "/" + totalAmmo);
     }
 
     private void TryReload()
     {
-        Debug.Log($"Trying to reload | current: {currentAmmo}, total: {totalAmmo}");
-        Debug.Log("Reload input received");
-
         if (!isReloading)
         {
             isReloading = true;
+            Debug.Log("Reloading...");
             StartCoroutine(ReloadWeapon(reloadTime));
-        }
-    }
-
-    private void FireWeapon()
-    {
-        if (isReloading)
-        {
-            Debug.Log("Reloading, please wait...");
-            return;
-        }
-
-        if (currentAmmo > 0 && !isShooting)
-        {
-            isShooting = true;
-            StartCoroutine(Shooting(fireRate));
-            currentAmmo -= 1;
-            Debug.Log("Bullet fired! Remaining ammo: " + currentAmmo + "/" + totalAmmo);
-        }
-
-        if (currentAmmo <= 0 && totalAmmo <= 0)
-        {
-            Debug.Log("Completely out of ammo!");
-        }
-        else if (currentAmmo <= 0)
-        {
-            Debug.Log("Magazine empty! Press reload.");
         }
     }
 
     private IEnumerator ReloadWeapon(float reloadTime)
     {
-        Debug.Log("Reloading...");
         yield return new WaitForSeconds(reloadTime);
 
-        float missingAmmo = magazineCapacity - currentAmmo;
+        int missingAmmo = magazineCapacity - currentAmmo;
 
         if (totalAmmo <= 0)
         {
@@ -139,20 +174,58 @@ public class Weapon : MonoBehaviour
         isReloading = false;
     }
 
-    private IEnumerator Shooting(float fireRate)
+    private void ResetShot()
     {
-        yield return new WaitForSeconds(fireRate);
-
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
-        bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
-        StartCoroutine(DestroyBullet(bullet, bulletLifeTime));
-
-        isShooting = false;
+        readyToShoot = true;
+        allowReset = true;
     }
 
-    private IEnumerator DestroyBullet(GameObject bullet, float bulletLifetime)
+    private void SetActiveGun(GunData.Attribute gun)
     {
-        yield return new WaitForSeconds(bulletLifetime);
-        Destroy(bullet);
+        activeGun = gun;
+
+        magazineCapacity = gun.magazineCapacity;
+        currentAmmo = magazineCapacity;
+        totalAmmo = gun.totalAmmo;
+        reloadTime = gun.reloadTime;
+        fireRate = gun.fireRate;
+        bulletVelocity = gun.bulletVelocity;
+        bulletLifeTime = gun.bulletLifeTime;
+        spreadIntensity = gun.spreadIntensity;
+        bulletsPerBurst = gun.bulletsPerBurst;
+        burstFireInterval = gun.burstFireInterval;
+
+        availableModes = gun.availableModes != null && gun.availableModes.Length > 0
+            ? gun.availableModes
+            : new GunData.ShootingMode[] { gun.shootingMode };
+
+        currentModeIndex = 0;
+        currentShootingMode = availableModes[currentModeIndex];
+        burstBulletsLeft = bulletsPerBurst;
+
+        Debug.Log($"Equipped weapon: {gun} | Mode: {currentShootingMode} | Ammo: {currentAmmo}/{totalAmmo}");
+    }
+
+    public void SwitchMode()
+    {
+        if (availableModes.Length > 1)
+        {
+            currentModeIndex = (currentModeIndex + 1) % availableModes.Length;
+            currentShootingMode = availableModes[currentModeIndex];
+            Debug.Log("Switched shooting mode to: " + currentShootingMode);
+        }
+    }
+
+    private Vector3 CalculateDirectionAndSpread()
+    {
+        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Vector3 targetPoint = Physics.Raycast(ray, out RaycastHit hit) ? hit.point : ray.GetPoint(100);
+
+        Vector3 direction = targetPoint - bulletSpawn.position;
+
+        float x = Random.Range(-spreadIntensity, spreadIntensity);
+        float y = Random.Range(-spreadIntensity, spreadIntensity);
+
+        return direction + new Vector3(x, y, 0);
     }
 }

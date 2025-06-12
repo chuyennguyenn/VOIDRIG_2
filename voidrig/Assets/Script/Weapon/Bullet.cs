@@ -9,5 +9,11 @@ public class Bullet: MonoBehaviour
             Debug.Log("Hit " +  collision.gameObject.name + " !");
             Destroy(gameObject);
         }
+
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("Hit " + collision.gameObject.name + " !");
+            Destroy(gameObject);
+        }
     }
 }

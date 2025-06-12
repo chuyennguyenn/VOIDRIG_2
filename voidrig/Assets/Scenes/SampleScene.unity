@@ -998,6 +998,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1034506902 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2255290347864925055, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+  m_PrefabInstance: {fileID: 4899595093047575582}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1228221616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,8 +1016,8 @@ GameObject:
   - component: {fileID: 1228221618}
   - component: {fileID: 1228221617}
   m_Layer: 0
-  m_Name: Shooting Range
-  m_TagString: Untagged
+  m_Name: Wall
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1136,16 +1141,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   machineGun:
-    magazineCapacity: 30
-    totalAmmo: 120
+    magazineCapacity: 60
+    totalAmmo: 180
     damage: 3
     bulletVelocity: 180
-    knockBack: 2
+    knockBack: 200
     bulletLifeTime: 2
     accuracy: 0.7
     fireRate: 0.05
-    reloadTime: 1
-    scatter: 0
+    reloadTime: 2
+    scatter: 1
   shotGun:
     magazineCapacity: 7
     totalAmmo: 28
@@ -1537,6 +1542,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 169896303571510390, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: mouseSensitivity
+      value: 350
+      objectReference: {fileID: 0}
     - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: gunData
       value: 
@@ -1544,6 +1553,18 @@ PrefabInstance:
     - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1034506902}
+    - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: shootingDelay
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 796136595893989884, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: currentShootingMode
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2182446337942164015, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_TagString
@@ -1596,6 +1617,18 @@ PrefabInstance:
     - target: {fileID: 3737066792191984989, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4902225765217221984, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: m_TagString
+      value: Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 7485638462872199345, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7485638462872199345, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
