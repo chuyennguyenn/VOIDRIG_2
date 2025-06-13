@@ -45,6 +45,8 @@ public class Weapon : MonoBehaviour
     private InputAction reloadAction;
     private InputAction switchModeAction;
 
+    private string weaponTag;
+
     private void Awake()
     {
         readyToShoot = true;
@@ -59,8 +61,30 @@ public class Weapon : MonoBehaviour
             Debug.LogWarning("PlayerCamera not assigned. Defaulting to Camera.main.");
         }
 
+        weaponTag = gameObject.tag;
+        Debug.Log("Weapon initialized with tag: " + weaponTag);
+
+        switch (weaponTag)
+        {
+            case "MachineGun":
+                SetActiveGun(gunData.machineGun);
+                break;
+            case "ShotGun":
+                SetActiveGun(gunData.shotGun);
+                break;
+            case "SniperRifle":
+                SetActiveGun(gunData.sniper);
+                break;
+            case "HandGun":
+                SetActiveGun(gunData.handGun);
+                break;
+            case "SMG":
+                SetActiveGun(gunData.smg);
+                break;
+        }
+
         // Equip the default gun
-        SetActiveGun(gunData.machineGun);
+        //SetActiveGun(gunData.machineGun);
     }
 
     private void OnEnable()
