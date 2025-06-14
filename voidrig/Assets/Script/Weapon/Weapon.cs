@@ -46,6 +46,7 @@ public class Weapon : MonoBehaviour
     private InputAction switchModeAction;
 
     private Animator animator;
+    //private AudioSource gunSound;
 
     private void Awake()
     {
@@ -129,6 +130,7 @@ public class Weapon : MonoBehaviour
         if (readyToShoot && isShooting)
         {
             animator.SetTrigger("Recoil");
+            SoundManager.Instance.PlayShoot();
             burstBulletsLeft = bulletsPerBurst;
             StartCoroutine(ShootRepeatedly());
         }
@@ -143,6 +145,7 @@ public class Weapon : MonoBehaviour
         {
             FireBullet();
             animator.SetTrigger("RecoilHigh");
+            SoundManager.Instance.PlayShoot();
             burstBulletsLeft--;
 
             if (currentShootingMode == GunData.ShootingMode.Single)
@@ -192,6 +195,7 @@ public class Weapon : MonoBehaviour
             isReloading = true;
             Debug.Log("Reloading...");
             animator.SetTrigger("Reload");
+            SoundManager.Instance.PlayReload();
             StartCoroutine(ReloadWeapon(reloadTime));
         }
     }
