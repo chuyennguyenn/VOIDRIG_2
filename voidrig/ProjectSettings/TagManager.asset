@@ -9,6 +9,10 @@ TagManager:
   - MachineGun
   - HandGun
   - Wall
+  - ShotGun
+  - SMG
+  - BurstRifle
+  - Sniper
   layers:
   - Default
   - TransparentFX

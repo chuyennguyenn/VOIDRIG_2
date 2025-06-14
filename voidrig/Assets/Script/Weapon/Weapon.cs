@@ -6,7 +6,6 @@ public class Weapon : MonoBehaviour
 {
     // === Inspector-Assigned References ===
     [Header("References")]
-    public Camera playerCamera;
     public GameObject bulletPrefab;
     public Transform bulletSpawn;
 
@@ -52,15 +51,31 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
-        // Fallback to main camera if not assigned
-        if (playerCamera == null)
+        switch (gameObject.tag)
         {
-            playerCamera = Camera.main;
-            Debug.LogWarning("PlayerCamera not assigned. Defaulting to Camera.main.");
+            case "MachineGun":
+                SetActiveGun(gunData.machineGun);
+                break;
+            case "ShotGun":
+                SetActiveGun(gunData.shotGun);
+                break;
+            case "Sniper":
+                SetActiveGun(gunData.sniper);
+                break;
+            case "HandGun":
+                SetActiveGun(gunData.handGun);
+                break;
+            case "SMG":
+                SetActiveGun(gunData.smg);
+                break;
+            case "BurstRifle":
+                SetActiveGun(gunData.burstRifle);
+                break;
+            default:
+                Debug.LogWarning("Unknown weapon tag: " + gameObject.tag + ". Defaulting to MachineGun.");
+                SetActiveGun(gunData.machineGun);
+                break;
         }
-
-        // Equip the default gun
-        SetActiveGun(gunData.machineGun);
     }
 
     private void OnEnable()
@@ -238,7 +253,7 @@ public class Weapon : MonoBehaviour
     private Vector3 CalculateDirectionAndSpread()
     {
         // Determine target point via raycast
-        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Vector3 targetPoint = Physics.Raycast(ray, out RaycastHit hit) ? hit.point : ray.GetPoint(100);
 
         // Add randomized spread
