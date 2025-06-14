@@ -4,39 +4,47 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
 
-    public AudioClip shootClip;
-    public AudioClip reloadClip;
+    [Header("Sound Data Asset")]
+    public SoundData soundData;
 
-    private AudioSource gunSound;
+    private AudioSource audioSource;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            gunSound = GetComponent<AudioSource>();
-            if (gunSound == null)
-                gunSound = gameObject.AddComponent<AudioSource>();
+            audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
         }
-        else if (Instance != this)
+        else
         {
             Destroy(gameObject);
         }
     }
 
-    public void PlayShoot()
+    public void PlayShoot(SoundData.WeaponSound weaponSound)
     {
-        PlaySound(shootClip);
+        PlaySound(soundData.GetShootClip(weaponSound));
     }
 
-    public void PlayReload()
+    public void PlayReload(SoundData.WeaponSound weaponSound)
     {
-        PlaySound(reloadClip);
+        PlaySound(soundData.GetReloadClip(weaponSound));
+    }
+
+    public void PlayEmpty(SoundData.WeaponSound weaponSound)
+    {
+        PlaySound(soundData.GetEmptyClip(weaponSound));
+    }
+
+    public void PlayBurnout(SoundData.WeaponSound weaponSound)
+    {
+        PlaySound(soundData.GetOverheatClip(weaponSound));
     }
 
     private void PlaySound(AudioClip clip)
     {
         if (clip != null)
-            gunSound.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip);
     }
 }

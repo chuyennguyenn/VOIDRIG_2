@@ -1,23 +1,23 @@
 using UnityEngine;
 
-public class Health: MonoBehaviour
+public class Health : MonoBehaviour
 {
-    public float health = 3;
+    public float health = 50f;
 
-    private void Update()
+    public void TakeDamage(float amount)
     {
+        health -= amount;
+        Debug.Log($"{gameObject.name} took {amount} damage. Remaining: {health}");
+
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void Die()
     {
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            Debug.Log("Hit!");
-            health -= 1;
-        }
+        Debug.Log($"{gameObject.name} has died.");
+        Destroy(gameObject); // Or trigger ragdoll, animation, etc.
     }
 }

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50407f000bd6f994cb010f74d19aa1da, type: 3}
+  m_Name: SoundData
+  m_EditorClassIdentifier: 
+  defaultShootClip: {fileID: 8300000, guid: 7ab2fada196713144ae0e5e576de4001, type: 3}
+  defaultReloadClip: {fileID: 8300000, guid: c9b5e84fa7544d34b8c811f5f6b7d970, type: 3}
+  defaultEmptyClip: {fileID: 8300000, guid: b7a5831348088b441a3934baebabc20b, type: 3}
+  defaultOverheatClip: {fileID: 8300000, guid: 7f14c1ccc64f7ad428a5573294858d86, type: 3}
+  machineGun:
+    shootClip: {fileID: 8300000, guid: d5d2c17bded79cb4d91140d9e170062d, type: 3}
+    reloadClip: {fileID: 0}
+    emptyClip: {fileID: 0}
+    overheatClip: {fileID: 0}
+  shotGun:
+    shootClip: {fileID: 8300000, guid: d0667dd4396d83d44a3e9ffca9fda1db, type: 3}
+    reloadClip: {fileID: 0}
+    emptyClip: {fileID: 0}
+    overheatClip: {fileID: 0}
+  sniper:
+    shootClip: {fileID: 8300000, guid: 72ae1a47eb74ec14ea588df7f51471aa, type: 3}
+    reloadClip: {fileID: 0}
+    emptyClip: {fileID: 0}
+    overheatClip: {fileID: 0}
+  handGun:
+    shootClip: {fileID: 8300000, guid: 34cad85ee7d5f55409fa3fcd07ec916c, type: 3}
+    reloadClip: {fileID: 0}
+    emptyClip: {fileID: 0}
+    overheatClip: {fileID: 0}
+  smg:
+    shootClip: {fileID: 8300000, guid: 9360de5a5d03c26409706ad4b6b80e31, type: 3}
+    reloadClip: {fileID: 0}
+    emptyClip: {fileID: 0}
+    overheatClip: {fileID: 0}
+  burstRifle:
+    shootClip: {fileID: 8300000, guid: 978ad943e4cee43449b9f5ec31804f7e, type: 3}
+    reloadClip: {fileID: 0}
+    emptyClip: {fileID: 0}
+    overheatClip: {fileID: 0}

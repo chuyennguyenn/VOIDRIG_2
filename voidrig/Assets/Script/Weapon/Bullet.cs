@@ -1,23 +1,33 @@
 using UnityEngine;
 
-public class Bullet: MonoBehaviour
+public class Bullet : MonoBehaviour
 {
+    public float damage = 10f; // This will be set by Weapon.cs
+
     private void OnCollisionEnter(Collision objectHit)
     {
-        if (objectHit.gameObject.CompareTag("Enemy"))
+        GameObject hitObject = objectHit.gameObject;
+
+        // Apply damage if the object has a health component
+        if (hitObject.CompareTag("Enemy"))
         {
-            Debug.Log("Hit " + objectHit.gameObject.name + " !");
+            Debug.Log("Hit " + hitObject.name + " for " + damage + " damage!");
+
+            if (hitObject.TryGetComponent(out Health health))
+            {
+                health.TakeDamage(damage);
+            }
+
             CreateBulletImpactEffect(objectHit);
             Destroy(gameObject);
         }
-
-        if (objectHit.gameObject.CompareTag("Wall"))
+        else if (hitObject.CompareTag("Wall"))
         {
-            Debug.Log("Hit " + objectHit.gameObject.name + " !");
             CreateBulletImpactEffect(objectHit);
             Destroy(gameObject);
         }
     }
+
     void CreateBulletImpactEffect(Collision objectHit)
     {
         ContactPoint contact = objectHit.contacts[0];
@@ -26,7 +36,7 @@ public class Bullet: MonoBehaviour
             GlobalRefrences.Instance.bulletImpactEffectPrefab,
             contact.point,
             Quaternion.LookRotation(contact.normal)
-            );
+        );
 
         hole.transform.SetParent(objectHit.gameObject.transform);
     }
