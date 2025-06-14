@@ -49,7 +49,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1106781187125368818, guid: cf15cd255b204c648ab944e476e1e96c, type: 3}
   bulletSpawn: {fileID: 66782552363077994}
+  muzzleEffect: {fileID: 0}
   gunData: {fileID: 0}
+  soundData: {fileID: 0}
 --- !u!1 &4872101756443803843
 GameObject:
   m_ObjectHideFlags: 0
