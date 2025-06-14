@@ -27,7 +27,7 @@ MonoBehaviour:
     emptyClip: {fileID: 0}
     overheatClip: {fileID: 0}
   sniper:
-    shootClip: {fileID: 8300000, guid: 72ae1a47eb74ec14ea588df7f51471aa, type: 3}
+    shootClip: {fileID: 8300000, guid: c5487871b5dd5fe4987cc3ea20e120fd, type: 3}
     reloadClip: {fileID: 0}
     emptyClip: {fileID: 0}
     overheatClip: {fileID: 0}

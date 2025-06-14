@@ -1027,7 +1027,7 @@ GameObject:
   - component: {fileID: 1010867867}
   m_Layer: 3
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1742,7 +1742,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2954074551582278421, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.516
+      value: 0.564
       objectReference: {fileID: 0}
     - target: {fileID: 3429162539685989681, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1790,7 +1790,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4117640976130596766, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: m_TagString
-      value: MachineGun
+      value: Sniper
       objectReference: {fileID: 0}
     - target: {fileID: 5490658173897204060, guid: 1104d01536557c04eb86e514ccfe50eb, type: 3}
       propertyPath: soundData
