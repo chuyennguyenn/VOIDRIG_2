@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     [Header("References")]
     public GameObject bulletPrefab;
     public Transform bulletSpawn;
+    public GameObject muzzleEffect;
 
     // === Gun Configuration Data ===
     [Header("Gun Data")]
@@ -44,9 +45,13 @@ public class Weapon : MonoBehaviour
     private InputAction reloadAction;
     private InputAction switchModeAction;
 
+    private Animator animator;
+
     private void Awake()
     {
         readyToShoot = true;
+        animator = GetComponent<Animator>();
+
     }
 
     private void Start()
@@ -123,6 +128,7 @@ public class Weapon : MonoBehaviour
         // Start firing routine
         if (readyToShoot && isShooting)
         {
+            animator.SetTrigger("Recoil");
             burstBulletsLeft = bulletsPerBurst;
             StartCoroutine(ShootRepeatedly());
         }
@@ -136,6 +142,7 @@ public class Weapon : MonoBehaviour
         while (burstBulletsLeft > 0 && currentAmmo > 0 && !isReloading)
         {
             FireBullet();
+            animator.SetTrigger("RecoilHigh");
             burstBulletsLeft--;
 
             if (currentShootingMode == GunData.ShootingMode.Single)
@@ -143,6 +150,8 @@ public class Weapon : MonoBehaviour
 
             yield return new WaitForSeconds(burstFireInterval);
         }
+
+        animator.SetTrigger("RecoilRecover");
 
         ResetShot();
     }
@@ -155,6 +164,11 @@ public class Weapon : MonoBehaviour
             Debug.Log(totalAmmo <= 0 ? "Completely out of ammo!" : "Magazine empty! Press reload.");
             return;
         }
+
+        muzzleEffect.GetComponent<ParticleSystem>().Play();
+        
+
+        //muzzleEffect.GetComponent<ParticleSystem>().Play();
 
         // Calculate direction with spread
         Vector3 shootingDirection = CalculateDirectionAndSpread().normalized;
@@ -177,6 +191,7 @@ public class Weapon : MonoBehaviour
         {
             isReloading = true;
             Debug.Log("Reloading...");
+            animator.SetTrigger("Reload");
             StartCoroutine(ReloadWeapon(reloadTime));
         }
     }
@@ -203,6 +218,8 @@ public class Weapon : MonoBehaviour
             totalAmmo -= missingAmmo;
             Debug.Log("Fully reloaded. Ammo: " + currentAmmo + "/" + totalAmmo);
         }
+
+        animator.SetTrigger("ReloadRecover");
 
         isReloading = false;
     }
