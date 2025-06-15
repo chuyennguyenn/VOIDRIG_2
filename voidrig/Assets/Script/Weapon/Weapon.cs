@@ -87,14 +87,19 @@ public class Weapon : MonoBehaviour
         reloadAction.Enable();
         switchModeAction.Enable();
 
+        /*
         reloadAction.performed += ctx => TryReload();
         switchModeAction.performed += ctx => SwitchMode();
+        */
+
     }
 
     private void OnDisable()
     {
+        /*
         if (reloadAction != null) reloadAction.performed -= ctx => TryReload();
         if (switchModeAction != null) switchModeAction.performed -= ctx => SwitchMode();
+        */
     }
 
     private void Update()
@@ -110,12 +115,18 @@ public class Weapon : MonoBehaviour
                 SetAnimTrigger("Recoil");
                 PlaySound(soundData.GetShootClip(activeSound));
                 burstBulletsLeft = bulletsPerBurst;
+                SetAnimTrigger("RecoilHigh");
                 StartCoroutine(ShootRepeatedly());
             }
             else
             {
                 PlaySound(soundData.GetEmptyClip(activeSound));
             }
+        }
+
+        if (reloadAction.WasPressedThisFrame())
+        {
+            TryReload();
         }
 
         if (AmmoManager.Instance.ammoDisplay != null)
@@ -128,7 +139,7 @@ public class Weapon : MonoBehaviour
     {
         readyToShoot = false;
 
-        SetAnimTrigger("Recoil");
+        
 
         if (activeGun.scatter)
         {
@@ -142,7 +153,7 @@ public class Weapon : MonoBehaviour
                 currentAmmo--; // use 1 shell
             }
 
-            SetAnimTrigger("RecoilHigh");
+            //SetAnimTrigger("RecoilHigh");
             PlaySound(soundData.GetShootClip(activeSound));
         }
         else
@@ -151,7 +162,7 @@ public class Weapon : MonoBehaviour
             while (burstBulletsLeft > 0 && currentAmmo > 0 && !isReloading)
             {
                 FireBullet();
-                SetAnimTrigger("RecoilHigh");
+                //SetAnimTrigger("RecoilHigh");
                 PlaySound(soundData.GetShootClip(activeSound));
                 burstBulletsLeft--;
 
@@ -162,7 +173,7 @@ public class Weapon : MonoBehaviour
             }
         }
 
-        SetAnimTrigger("RecoilRecover");
+        
         ResetShot();
     }
 
@@ -241,6 +252,7 @@ public class Weapon : MonoBehaviour
     {
         readyToShoot = true;
         allowReset = true;
+        SetAnimTrigger("RecoilRecover");
     }
 
     private void SetActiveGun(GunData.Attribute gun, SoundData.WeaponSound sound)
