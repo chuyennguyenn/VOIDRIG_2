@@ -45,6 +45,7 @@ public class Weapon : MonoBehaviour
     private Animator animator;
     private AudioSource audioSource;
 
+
     private void Awake()
     {
         readyToShoot = true;
@@ -116,6 +117,11 @@ public class Weapon : MonoBehaviour
                 PlaySound(soundData.GetEmptyClip(activeSound));
             }
         }
+
+        if (AmmoManager.Instance.ammoDisplay != null)
+        {
+            AmmoManager.Instance.ammoDisplay.text = $"{currentAmmo} / {totalAmmo}";
+        }
     }
 
     private IEnumerator ShootRepeatedly()
@@ -126,10 +132,14 @@ public class Weapon : MonoBehaviour
 
         if (activeGun.scatter)
         {
-            // Shotgun: fire all burst bullets at once
-            for (int i = 0; i < bulletsPerBurst && currentAmmo > 0 && !isReloading; i++)
+            if (currentAmmo > 0 && !isReloading)
             {
-                FireBullet();
+                for (int i = 0; i < bulletsPerBurst; i++)
+                {
+                    FireBullet(ignoreAmmo: true); // fire 40 pellets
+                }
+
+                currentAmmo--; // use 1 shell
             }
 
             SetAnimTrigger("RecoilHigh");
@@ -157,9 +167,9 @@ public class Weapon : MonoBehaviour
     }
 
 
-    private void FireBullet()
+    private void FireBullet(bool ignoreAmmo = false)
     {
-        if (currentAmmo <= 0)
+        if (!ignoreAmmo && currentAmmo <= 0)
         {
             Debug.Log(totalAmmo <= 0 ? "Completely out of ammo!" : "Magazine empty! Press reload.");
             return;
@@ -171,7 +181,6 @@ public class Weapon : MonoBehaviour
 
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
 
-        // Set damage if the bullet has a script like Bullet.cs
         if (bullet.TryGetComponent(out Bullet bulletScript))
         {
             bulletScript.damage = activeGun.damage;
@@ -182,9 +191,12 @@ public class Weapon : MonoBehaviour
         rb.AddForce(shootingDirection * bulletVelocity, ForceMode.Impulse);
         Destroy(bullet, bulletLifeTime);
 
-        currentAmmo--;
+        if (!ignoreAmmo)
+            currentAmmo--;
+
         Debug.Log("Bullet fired! Remaining ammo: " + currentAmmo + "/" + totalAmmo);
     }
+
 
     private void TryReload()
     {
@@ -244,7 +256,7 @@ public class Weapon : MonoBehaviour
         bulletVelocity = gun.bulletVelocity;
         bulletLifeTime = gun.bulletLifeTime;
         spreadIntensity = gun.spreadIntensity;
-        bulletsPerBurst = gun.bulletsPerBurst;
+        bulletsPerBurst = Mathf.Max(1, gun.bulletsPerBurst);
         burstFireInterval = gun.burstFireInterval;
 
         availableModes = gun.availableModes != null && gun.availableModes.Length > 0
