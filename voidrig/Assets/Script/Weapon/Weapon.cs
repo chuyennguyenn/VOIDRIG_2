@@ -110,12 +110,13 @@ public class Weapon : MonoBehaviour
 
         if (readyToShoot && isShooting)
         {
+            SetAnimTrigger("Recoil");
             if (currentAmmo > 0)
             {
-                SetAnimTrigger("Recoil");
+                
                 PlaySound(soundData.GetShootClip(activeSound));
                 burstBulletsLeft = bulletsPerBurst;
-                SetAnimTrigger("RecoilHigh");
+                //SetAnimTrigger("RecoilHigh");
                 StartCoroutine(ShootRepeatedly());
             }
             else
@@ -139,8 +140,6 @@ public class Weapon : MonoBehaviour
     {
         readyToShoot = false;
 
-        
-
         if (activeGun.scatter)
         {
             if (currentAmmo > 0 && !isReloading)
@@ -153,7 +152,7 @@ public class Weapon : MonoBehaviour
                 currentAmmo--; // use 1 shell
             }
 
-            //SetAnimTrigger("RecoilHigh");
+            SetAnimTrigger("RecoilHigh");
             PlaySound(soundData.GetShootClip(activeSound));
         }
         else
@@ -162,7 +161,7 @@ public class Weapon : MonoBehaviour
             while (burstBulletsLeft > 0 && currentAmmo > 0 && !isReloading)
             {
                 FireBullet();
-                //SetAnimTrigger("RecoilHigh");
+                SetAnimTrigger("RecoilHigh");
                 PlaySound(soundData.GetShootClip(activeSound));
                 burstBulletsLeft--;
 
