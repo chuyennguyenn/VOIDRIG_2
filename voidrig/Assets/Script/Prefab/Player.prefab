@@ -106,6 +106,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 723833060219750653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &544651608237857467
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4327684344201372481}
+  m_Layer: 0
+  m_Name: WeaponLocation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4327684344201372481
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 544651608237857467}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 840.5795, y: 10.612501, z: -2.63}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1042894144618378284}
+  m_Father: {fileID: 3429162539685989681}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3006251146708180062
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,6 +196,7 @@ MonoBehaviour:
     spreadIntensity: 0.2
     bulletsPerBurst: 1
     burstFireInterval: 0.05
+    overheatThreshold: 600
     shootingMode: 2
     availableModes: 020000000100000000000000
   shotGun:
@@ -180,6 +213,7 @@ MonoBehaviour:
     spreadIntensity: 1
     bulletsPerBurst: 5
     burstFireInterval: 0.15
+    overheatThreshold: 400
     shootingMode: 1
     availableModes: 01000000
   sniper:
@@ -196,6 +230,7 @@ MonoBehaviour:
     spreadIntensity: 0
     bulletsPerBurst: 1
     burstFireInterval: 0.5
+    overheatThreshold: 10
     shootingMode: 0
     availableModes: 00000000
   handGun:
@@ -212,6 +247,7 @@ MonoBehaviour:
     spreadIntensity: 0.1
     bulletsPerBurst: 1
     burstFireInterval: 0.15
+    overheatThreshold: 100
     shootingMode: 0
     availableModes: 0000000002000000
   smg:
@@ -228,6 +264,7 @@ MonoBehaviour:
     spreadIntensity: 0.3
     bulletsPerBurst: 1
     burstFireInterval: 0.05
+    overheatThreshold: 600
     shootingMode: 2
     availableModes: 0200000001000000
   burstRifle:
@@ -244,6 +281,7 @@ MonoBehaviour:
     spreadIntensity: 0.15
     bulletsPerBurst: 3
     burstFireInterval: 0.1
+    overheatThreshold: 600
     shootingMode: 1
     availableModes: 0100000000000000
 --- !u!1 &3565873214756306694
@@ -419,8 +457,8 @@ Transform:
   - {fileID: 1787699757902461904}
   - {fileID: 723833060219750653}
   - {fileID: 1237637320033994393}
-  - {fileID: 1042894144618378284}
   - {fileID: 5541216136072992309}
+  - {fileID: 4327684344201372481}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1825753938297431570
@@ -732,7 +770,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3429162539685989681}
+    m_TransformParent: {fileID: 4327684344201372481}
     m_Modifications:
     - target: {fileID: 1240589833051934177, guid: 2d04aceb4596f8b42a1a807fd136daa8, type: 3}
       propertyPath: m_Name
@@ -740,15 +778,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2768205195472987731, guid: 2d04aceb4596f8b42a1a807fd136daa8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.3
+      value: -840.27954
       objectReference: {fileID: 0}
     - target: {fileID: 2768205195472987731, guid: 2d04aceb4596f8b42a1a807fd136daa8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.53
+      value: -10.0825
       objectReference: {fileID: 0}
     - target: {fileID: 2768205195472987731, guid: 2d04aceb4596f8b42a1a807fd136daa8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.9
+      value: 3.5300002
       objectReference: {fileID: 0}
     - target: {fileID: 2768205195472987731, guid: 2d04aceb4596f8b42a1a807fd136daa8, type: 3}
       propertyPath: m_LocalRotation.w
